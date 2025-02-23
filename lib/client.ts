@@ -1,14 +1,14 @@
 import { http, createPublicClient, custom } from 'viem';
 import { createWalletClient } from 'viem'
 
-import { baseSepolia } from 'viem/chains';
+import { arbitrumSepolia } from 'viem/chains';
 
 export const publicClient = createPublicClient({
-  chain: baseSepolia,
-  transport: http(process.env.NEXT_PUBLIC_RPC_URL_BASE_SEPOLIA),
+  chain: arbitrumSepolia,
+  transport: http(process.env.NEXT_PUBLIC_RPC_URL_ARBITRUM_TESTNET),
 });
 
 export const walletClient = createWalletClient({
-  chain: baseSepolia,
+  chain: arbitrumSepolia,
   transport: custom(window.ethereum)
 })
