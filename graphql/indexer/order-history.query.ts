@@ -46,11 +46,66 @@ export const queryOrderHistoryId = (id: string) => {
   }`
 }
 
-export const queryOrderHistoryList = () => {
+export const queryOrderHistorysList = () => {
+  return gql`{
+    orderHistoryss(
+      orderBy: blockTimestamp
+      orderDirection: desc
+    ) {
+      items {
+        filled
+        id
+        order {
+          expiry
+          filled
+          id
+          orderId
+          poolId
+          price
+          quantity
+          side
+          status
+          timestamp
+          type
+          user {
+            amount
+            currency
+            lockedAmount
+            user
+          }
+        }
+        orderId
+        pool {
+          baseCurrency
+          coin
+          id
+          lotSize
+          maxOrderAmount
+          orderBook
+          quoteCurrency
+          timestamp
+        }
+        poolId
+        status
+        timestamp
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      totalCount
+    }
+  }`
+}
+
+export const queryOrderHistorysId = (id: string) => {
   return gql`{
     orderHistorys(
       orderBy: blockTimestamp
       orderDirection: desc
+      where: {id: "${id}"}
     ) {
       items {
         filled

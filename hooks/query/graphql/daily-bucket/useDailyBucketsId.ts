@@ -8,7 +8,10 @@ export const useDailyBuckets = (id: string) => {
     queryKey: ['gql-daily-buckets-id', id],
     queryFn: async () => {
       if (id) {
-        return await request(process.env.NEXT_PUBLIC_API_GRAPHQL_INDEXER_URL || "", queryDailyBucketsId(((id).toString()).toLowerCase()));
+        return await request(
+          process.env.NEXT_PUBLIC_API_GRAPHQL_INDEXER_URL || "", 
+          queryDailyBucketsId(((id).toString()).toLowerCase())
+        );
       }
 
       return { dailyBucketss: { items: [], pageInfo: { endCursor: null, hasNextPage: false, hasPreviousPage: false, startCursor: null }, totalCount: 0 } };

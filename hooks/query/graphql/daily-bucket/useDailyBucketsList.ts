@@ -7,7 +7,10 @@ export const useDailyBucketsList = () => {
   const { data, isLoading, error, refetch } = useQuery<QueryDailyBucketsList>({
     queryKey: ['gql-daily-buckets-list'],
     queryFn: async () => {
-      return await request(process.env.NEXT_PUBLIC_API_GRAPHQL_INDEXER_URL || "", queryDailyBucketsList());
+      return await request(
+        process.env.NEXT_PUBLIC_API_GRAPHQL_INDEXER_URL || "", 
+        queryDailyBucketsList()
+      );
     },
     refetchInterval: 10000,
     staleTime: 10000

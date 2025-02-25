@@ -11,7 +11,10 @@ export const useBalanceUser = () => {
     queryKey: ['gql-balance-user', address],
     queryFn: async () => {
       if (address) {
-        return await request(process.env.NEXT_PUBLIC_API_GRAPHQL_INDEXER_URL || "", queryBalanceUser(((address).toString()).toLowerCase()));
+        return await request(
+          process.env.NEXT_PUBLIC_API_GRAPHQL_INDEXER_URL || "", 
+          queryBalanceUser(((address).toString()).toLowerCase())
+        );
       }
 
       return { balances: [] };
