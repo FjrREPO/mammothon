@@ -17,9 +17,9 @@ export const useOrderBookTradesList = () => {
   })
 
   return {
-    dbData: data,
-    dbLoading: isLoading,
-    dbError: error,
-    dbRefetch: refetch,
+    obtData: data,
+    obtLoading: isLoading,
+    obtError: error,
+    obtRefetch: refetch,
   }
 }

@@ -22,9 +22,9 @@ export const useOrderBookTrades = (id: string) => {
   })
 
   return {
-    dbData: data,
-    dbLoading: isLoading,
-    dbError: error,
-    dbRefetch: refetch,
+    obtData: data,
+    obtLoading: isLoading,
+    obtError: error,
+    obtRefetch: refetch,
   }
 }

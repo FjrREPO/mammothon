@@ -34,17 +34,22 @@ const OrderHistoryListSchema = z.object({
 });
 
 export const QueryOrderHistoryIdSchema = z.object({
-  orderHistorys: z.array(OrderHistorySchema),
+  orderHistory: z.array(OrderHistorySchema),
 });
 
 export const QueryOrderHistorysListSchema = z.object({
-  orderHistoryss: OrderHistoryListSchema,
+  orderHistorys: OrderHistoryListSchema,
 });
 
-export const QueryOrderHistoryUserSchema = z.object({
+export const QueryOrderHistorysIdSchema = z.object({
+  orderHistorys: OrderHistoryListSchema,
+});
+
+export const QueryOrderHistorysUserSchema = z.object({
   orderHistorys: OrderHistoryListSchema,
 });
 
 export type QueryOrderHistoryId = z.infer<typeof QueryOrderHistoryIdSchema>;
 export type QueryOrderHistorysList = z.infer<typeof QueryOrderHistorysListSchema>;
-export type QueryOrderHistoryUser = z.infer<typeof QueryOrderHistoryUserSchema>;
+export type QueryOrderHistorysId = z.infer<typeof QueryOrderHistorysIdSchema>;
+export type QueryOrderHistorysUser = z.infer<typeof QueryOrderHistorysUserSchema>;

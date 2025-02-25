@@ -14,7 +14,7 @@ export const useOrderHistory = (id: string) => {
         );
       }
 
-      return { orderHistorys: [] };
+      return { orderHistory: [] };
     },
     enabled: !!id,
     refetchInterval: 10000,
@@ -22,9 +22,9 @@ export const useOrderHistory = (id: string) => {
   })
 
   return {
-    dbData: data,
-    dbLoading: isLoading,
-    dbError: error,
-    dbRefetch: refetch,
+    ohData: data,
+    ohLoading: isLoading,
+    ohError: error,
+    ohRefetch: refetch,
   }
 }

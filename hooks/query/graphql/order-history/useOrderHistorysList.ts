@@ -17,9 +17,9 @@ export const useOrderHistorysList = () => {
   })
 
   return {
-    dbData: data,
-    dbLoading: isLoading,
-    dbError: error,
-    dbRefetch: refetch,
+    ohData: data,
+    ohLoading: isLoading,
+    ohError: error,
+    ohRefetch: refetch,
   }
 }

@@ -2,7 +2,7 @@ import { gql } from "graphql-request"
 
 export const queryOrderHistoryId = (id: string) => {
   return gql`{
-    orderHistorys(
+    orderHistory(
       orderBy: blockTimestamp
       orderDirection: desc
       where: {id: "${id}"}
@@ -48,7 +48,7 @@ export const queryOrderHistoryId = (id: string) => {
 
 export const queryOrderHistorysList = () => {
   return gql`{
-    orderHistoryss(
+    orderHistorys(
       orderBy: blockTimestamp
       orderDirection: desc
     ) {
@@ -155,7 +155,7 @@ export const queryOrderHistorysId = (id: string) => {
   }`
 }
 
-export const queryOrderHistoryUser = (address: string) => {
+export const queryOrderHistorysUser = (address: string) => {
   return gql`{
     orderHistorys(
       orderBy: blockTimestamp

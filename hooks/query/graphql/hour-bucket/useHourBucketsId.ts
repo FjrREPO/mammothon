@@ -22,9 +22,9 @@ export const useHourBuckets = (id: string) => {
   })
 
   return {
-    dbData: data,
-    dbLoading: isLoading,
-    dbError: error,
-    dbRefetch: refetch,
+    hbData: data,
+    hbLoading: isLoading,
+    hbError: error,
+    hbRefetch: refetch,
   }
 }
