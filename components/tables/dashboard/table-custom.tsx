@@ -1,4 +1,4 @@
-import React, { Key } from "react";
+import React, { Key, useEffect, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -14,7 +14,8 @@ import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/d
 import { ChevronDownIcon, SearchIcon } from "lucide-react";
 import { Button } from "@heroui/button";
 import { cn } from "@/lib/utils";
-import SkeletonWrapper from "../loader/skeleton-wrapper";
+import { OrdersResponse } from "@/types/query/graphql/order.types";
+import SkeletonWrapper from "@/components/loader/skeleton-wrapper";
 
 export interface Column {
   name: string;
@@ -25,7 +26,7 @@ export interface Column {
 
 export interface TableCustomProps<T> {
   className?: string;
-  data: T[];
+  data: OrdersResponse[];
   isLoading: boolean;
   columns: Column[];
   renderCell: (item: T, columnKey: string) => React.ReactNode;
@@ -36,6 +37,7 @@ export interface TableCustomProps<T> {
   rowsPerPageOptions?: number[];
   initialRowsPerPage?: number;
   searchPlaceholder?: string;
+  onRefresh?: () => void;
 }
 
 const getNestedValue = (obj: { [key: string]: unknown }, path: string): unknown => {
@@ -58,12 +60,14 @@ export function TableCustom<T>({
   rowsPerPageOptions = [5, 10, 15],
   initialRowsPerPage = 5,
   searchPlaceholder = "Search...",
+  onRefresh,
 }: TableCustomProps<T>) {
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set());
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(columns.map(column => column.uid)));
   const [rowsPerPage, setRowsPerPage] = React.useState(initialRowsPerPage);
   const [page, setPage] = React.useState(1);
+  const [refreshCount, setRefreshCount] = useState(1);
   const [sortDescriptor, setSortDescriptor] = React.useState<{
     column: string;
     direction: "ascending" | "descending";
@@ -71,6 +75,21 @@ export function TableCustom<T>({
     column: columns[0].uid,
     direction: "ascending",
   });
+
+  useEffect(() => {
+    if (refreshCount < 3 && onRefresh) {
+      const timer = setTimeout(() => {
+        onRefresh();
+        setRefreshCount(prevCount => prevCount + 1);
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [refreshCount, onRefresh]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [data, filterValue]);
 
   const headerColumns = React.useMemo(() => {
     return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
@@ -81,9 +100,12 @@ export function TableCustom<T>({
 
     if (filterValue && searchKey) {
       filteredData = filteredData.filter((item) => {
-        const searchValue = item[searchKey]?.toString().toLowerCase();
-
-        return searchValue?.includes(filterValue.toLowerCase());
+        if (!item || !item.pool || typeof item.pool.coin === 'undefined') {
+          return false;
+        }
+        
+        const searchValue = String(item.pool.coin).toLowerCase();
+        return searchValue.includes(filterValue.toLowerCase());
       });
     }
 
@@ -271,18 +293,24 @@ export function TableCustom<T>({
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"No items found"} items={sortedItems}>
-        {(item: T) => (
-          <TableRow key={item[columns[0].uid as keyof T] as Key} className={cn(`hover:bg-foreground/10 h-auto`, className)}>
-            {(columnKey: Key) => (
-              <TableCell className="py-5">
-                <SkeletonWrapper isLoading={isLoading}>
-                  {renderCell(item, columnKey.toString())}
-                </SkeletonWrapper>
-              </TableCell>
-            )}
-          </TableRow>
-        )}
+      <TableBody emptyContent={"No items found"} items={sortedItems as Iterable<T>}>
+        {(item: T) => {
+          const rowKey = item && typeof item === 'object' 
+            ? (item[columns[0].uid as keyof T] as Key) || `row-${Math.random().toString(36).substring(2, 9)}`
+            : `row-${Math.random().toString(36).substring(2, 9)}`;
+          
+          return (
+            <TableRow key={rowKey} className={cn(`hover:bg-foreground/10 h-auto`, className)}>
+              {(columnKey: Key) => (
+                <TableCell className="py-5">
+                  <SkeletonWrapper isLoading={isLoading}>
+                    {renderCell(item, columnKey.toString())}
+                  </SkeletonWrapper>
+                </TableCell>
+              )}
+            </TableRow>
+          );
+        }}
       </TableBody>
     </Table>
   );

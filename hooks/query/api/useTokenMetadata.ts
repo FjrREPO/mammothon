@@ -8,7 +8,6 @@ export const useTokenMetadata = () => {
       return await fetch(`/api/token-metadata`).then(res => res.json());
     },
     refetchInterval: 6000000,
-    staleTime: 6000000
   })
 
   return {

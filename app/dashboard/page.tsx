@@ -4,10 +4,11 @@ import { subtitle } from "@/components/primitives";
 import TableOrders from "@/components/tables/dashboard/table-orders";
 import { useOrdersList } from "@/hooks/query/graphql/order/useOrdersList";
 import { cn } from "@/lib/utils";
+import { Tabs, Tab } from "@heroui/tabs";
 import { motion } from "framer-motion";
 
 export default function Page() {
-  const { oData } = useOrdersList();
+  const { oData, oLoading } = useOrdersList();
 
   return (
     <div className="py-5 pt-24 overflow-x-hidden w-full">
@@ -27,16 +28,21 @@ export default function Page() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            Manage your token here.
+            See your portfolio here.
           </motion.span>
         </div>
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="w-full"
+          className="w-full flex flex-col gap-5"
         >
-          <TableOrders datas={oData?.orderss.items ?? []} />
+          <Tabs aria-label="Tabs variants" variant="bordered" className="w-full" color="warning">
+            <Tab key="1" title="Positions" />
+            <Tab key="2" title="Order History">
+              <TableOrders datas={oData?.orderss.items ?? []} isLoading={oLoading} />
+            </Tab>
+          </Tabs>
         </motion.div>
       </div>
     </div>
