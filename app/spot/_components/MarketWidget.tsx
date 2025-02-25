@@ -76,13 +76,19 @@ export default function MarketWidget({
         )}
 
         <div className='flex flex-row items-center gap-5'>
-          <div className="grid grid-cols-2 gap-4 w-full sm:w-auto">
+          <div className="grid grid-cols-3 gap-4 w-full sm:w-auto">
             {cLoading ? (
               Array(2).fill(0).map((_, i) => (
                 <Skeleton key={i} className="h-12 w-28 rounded-xl" />
               ))
             ) : (
               <>
+                <DataItem 
+                  label='Price'
+                  value={formatNumber(mData?.currentPrice ?? 0, { prefix: '$', compact: true })}
+                  content='The latest price of the token.'
+                />
+
                 <DataItem
                   label="24h Volume"
                   value={formatNumber(mData?.totalVolume ?? 0, { prefix: '$', compact: true })}
@@ -94,6 +100,30 @@ export default function MarketWidget({
                   value={formatNumber(mData?.marketCap ?? 0, { prefix: '$', compact: true })}
                   content={`Full market cap: ${formatNumber(mData?.marketCap ?? 0, { prefix: '$' })}`}
                 />
+
+                <DataItem 
+                  label='BLV'
+                  value={formatNumber(mData?.currentPrice ? mData.currentPrice * 0.5 : 0, { prefix: '$', compact: true })}
+                  content='The Floor price of the token.'
+                />
+
+                <div className="text-xs space-y-1 col-span-2">
+                  <div className="text-gray-400 font-semibold">Bump</div>
+                  <div className="text-white font-medium">
+                    <div className="w-48 h-4 bg-gray-800 rounded relative overflow-hidden">
+                      <div className="absolute inset-0 flex">
+                        {Array.from({ length: 8 }).map((_, i) => (
+                          <div
+                            key={i}
+                            className={`h-full w-8 ${
+                              i < 6 ? "bg-yellow-400" : "bg-gray-700"
+                            } transform -skew-x-12 border-r border-gray-800`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </>
             )}
           </div>
