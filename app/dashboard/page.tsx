@@ -38,7 +38,7 @@ export default function Page() {
           className="w-full flex flex-col gap-5"
         >
           <Tabs aria-label="Tabs variants" variant="bordered" className="w-full" color="warning">
-            <Tab key="1" title="Positions" />
+            <Tab key="1" title="Overview" />
             <Tab key="2" title="Order History">
               <TableOrders datas={oData?.orderss.items ?? []} isLoading={oLoading} />
             </Tab>
