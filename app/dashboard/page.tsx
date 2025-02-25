@@ -1,13 +1,13 @@
 "use client";
 
 import { subtitle } from "@/components/primitives";
-import TableVaults from "@/components/tables/vaults/table-vaults";
-import { dataVaults } from "@/data/dataVaults";
+import TableOrders from "@/components/tables/dashboard/table-orders";
+import { useOrdersList } from "@/hooks/query/graphql/order/useOrdersList";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 export default function Page() {
-  const dVault = dataVaults;
+  const { oData } = useOrdersList();
 
   return (
     <div className="py-5 pt-24 overflow-x-hidden w-full">
@@ -36,7 +36,7 @@ export default function Page() {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="w-full"
         >
-          <TableVaults datas={dVault} />
+          <TableOrders datas={oData?.orderss.items ?? []} />
         </motion.div>
       </div>
     </div>

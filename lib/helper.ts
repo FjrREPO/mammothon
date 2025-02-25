@@ -21,6 +21,11 @@ export const formatUSD = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value);
 
+export const formatTimestamp = (timestamp: number): string => {
+  const date = new Date(timestamp * 1000);
+  return date.toLocaleString();
+}
+
 export const formatAPR = (apr: number | null) => {
   if (apr === null) return 'N/A';
   return `${(apr * 100).toFixed(2)}%`;

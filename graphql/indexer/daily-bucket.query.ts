@@ -3,7 +3,7 @@ import { gql } from "graphql-request"
 export const queryDailyBucketId = (id: string) => {
   return gql`{
     dailyBuckets(
-      orderBy: blockTimestamp
+      orderBy: timestamp
       orderDirection: desc
       id: "${id}"
     ) {
@@ -23,7 +23,7 @@ export const queryDailyBucketId = (id: string) => {
 export const queryDailyBucketsList = () => {
   return gql`{
     dailyBucketss(
-      orderBy: blockTimestamp
+      orderBy: timestamp
       orderDirection: desc
     ) {
       items {
@@ -51,7 +51,7 @@ export const queryDailyBucketsList = () => {
 export const queryDailyBucketsId = (id: string) => {
   return gql`{
     dailyBucketss(
-      orderBy: blockTimestamp
+      orderBy: timestamp
       orderDirection: desc
       where: {id: "${id}"}
     ) {

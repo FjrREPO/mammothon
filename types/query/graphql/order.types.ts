@@ -27,3 +27,4 @@ export type QueryOrderId = z.infer<typeof QueryOrderIdSchema>;
 export type QueryOrdersList = z.infer<typeof QueryOrdersListSchema>;
 export type QueryOrdersUser = z.infer<typeof QueryOrdersUserSchema>;
 export type QueryOrdersId = z.infer<typeof QueryOrdersIdSchema>;
+export type OrdersResponse = z.infer<typeof OrderSchema>;

@@ -28,7 +28,7 @@ export const PoolSchema = z.object({
 export const OrderSchema = z.object({
   expiry: z.string(),
   filled: z.string(),
-  id: z.string(),
+  id: z.any().nullable().optional(),
   orderId: z.string(),
   poolId: z.string(),
   price: z.string(),
@@ -38,4 +38,5 @@ export const OrderSchema = z.object({
   timestamp: z.string(),
   type: z.string(),
   user: UserSchema,
+  pool: PoolSchema.optional(),
 });
