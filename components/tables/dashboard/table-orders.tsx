@@ -7,6 +7,7 @@ import React from "react";
 import { tokensData } from "@/data/tokensData";
 import { normalize } from "@/lib/bignumber";
 import { DECIMALS_TOKEN } from "@/lib/constants";
+import { formatNumber } from "@/lib/custom-helper";
 
 interface TableOrdersProps {
   datas: OrdersResponse[];
@@ -20,6 +21,7 @@ export default function TableOrders({ datas, isLoading }: TableOrdersProps) {
     { name: "Time", uid: "timestamp", sortable: true },
     { name: "Expiry", uid: "expiry", sortable: true },
     { name: "Token", uid: "token", sortable: true, sortingKey: "pool.coin" },
+    { name: "Price", uid: "price", sortable: true },
     { name: "Quantity", uid: "quantity", sortable: true },
     { name: "Status", uid: "status", sortable: true }
   ];
@@ -76,10 +78,16 @@ export default function TableOrders({ datas, isLoading }: TableOrdersProps) {
             </div>
           );
         };
+      case "price":
+        return (
+          <div className="flex flex-row gap-2 items-center">
+            <p className="text-bold text-sm capitalize">{formatNumber(Number(normalize(item.price, DECIMALS_TOKEN)), { prefix: "$", compact: true })}</p>
+          </div>
+        );
       case "quantity":
         return (
           <div className="flex flex-row gap-2 items-center">
-            <p className="text-bold text-sm capitalize">{normalize(item.quantity, DECIMALS_TOKEN)}</p>
+            <p className="text-bold text-sm capitalize">{formatNumber(Number(normalize(item.quantity, DECIMALS_TOKEN)), { compact: true })}</p>
           </div>
         );
       case "status":

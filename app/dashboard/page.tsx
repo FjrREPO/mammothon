@@ -6,6 +6,8 @@ import { useOrdersList } from "@/hooks/query/graphql/order/useOrdersList";
 import { cn } from "@/lib/utils";
 import { Tabs, Tab } from "@heroui/tabs";
 import { motion } from "framer-motion";
+import DashboardOverview from "./_components/DashboardOverview";
+import DashboardTokenDeployed from "./_components/DashboardTokenDeployed";
 
 export default function Page() {
   const { oData, oLoading } = useOrdersList();
@@ -28,7 +30,7 @@ export default function Page() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            See your portfolio here.
+            See your details here.
           </motion.span>
         </div>
         <motion.div
@@ -38,8 +40,13 @@ export default function Page() {
           className="w-full flex flex-col gap-5"
         >
           <Tabs aria-label="Tabs variants" variant="bordered" className="w-full" color="warning">
-            <Tab key="1" title="Overview" />
-            <Tab key="2" title="Order History">
+            <Tab key="1" title="Overview">
+              <DashboardOverview />
+            </Tab>
+            <Tab key="2" title="Token Deployed">
+              <DashboardTokenDeployed />
+            </Tab>
+            <Tab key="3" title="Order History">
               <TableOrders datas={oData?.orderss.items ?? []} isLoading={oLoading} />
             </Tab>
           </Tabs>
