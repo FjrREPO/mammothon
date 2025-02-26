@@ -1,218 +1,202 @@
 "use client";
 
-import { ArrowUp, Box, Lock, Search, Settings, Sparkles } from "lucide-react";
-import { GlowingEffect } from "@/components/ui/glowing-effect";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
-import { DECIMALS_TOKEN } from "@/lib/constants";
 import { Form } from "@heroui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateTokenForm, createTokenFormSchema } from "@/types/mutation/create-token.form";
-import { motion } from "framer-motion";
+import { Card, CardBody, CardHeader } from "@heroui/card";
+import { CreatePoolForm, createPoolFormSchema } from "@/types/mutation/pool-manager/create-pool.form";
+import SliderVariable from "./SliderVariable";
+import { useState } from "react";
+import { useCreatePool } from "@/hooks/mutation/pool-manager/useCreatePool";
+import Loading from "@/components/loader/loading";
 
 export function LaunchpadForm() {
+  const { mutation } = useCreatePool();
+
+  const [amounts, setAmounts] = useState({
+    bottomAmount: 0.25,
+    anchorAmount: 0.25,
+    discoveryAmount: 0.25,
+    allocationAmount: 0.25,
+  });
+
+  const [locked, setLocked] = useState({
+    bottomAmount: false,
+    anchorAmount: false,
+    discoveryAmount: false,
+    allocationAmount: false,
+  });
+
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<CreateTokenForm>({
-    resolver: zodResolver(createTokenFormSchema),
+    formState: { errors }
+  } = useForm<CreatePoolForm>({
+    resolver: zodResolver(createPoolFormSchema),
     defaultValues: {
-      name: "",
-      symbol: "",
-      totalSupply: 0,
+      quoteCurrency: "",
+      lotSize: 0,
+      maxOrderAmount: 0,
+      tokenName: "",
+      tokenSymbol: "",
+      tokenTotalSupply: 0,
+      bottomAmount: 0.25,
+      anchorAmount: 0.25,
+      discoveryAmount: 0.25,
+      allocationAmount: 0.25,
+      bottomPrice: 0,
+      anchorPrice: 0,
+      discoveryPrice: 0
     },
   });
 
-  const formatNumber = (num: string) => {
-    return num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+  const onSubmit = (data: CreatePoolForm) => {
+    const calculateAmounts = (amounts: { bottomAmount: number, anchorAmount: number, discoveryAmount: number, allocationAmount: number }) => {
+      const totalSupply = data.tokenTotalSupply;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value.replace(/,/g, "").replace(/\D/g, "");
-    setValue("totalSupply", Number(rawValue));
-  };
+      let bottomAmount = Math.round(amounts.bottomAmount * totalSupply);
+      const anchorAmount = Math.round(amounts.anchorAmount * totalSupply);
+      const discoveryAmount = Math.round(amounts.discoveryAmount * totalSupply);
+      const allocationAmount = Math.round(amounts.allocationAmount * totalSupply);
 
-  const onSubmit = (data: CreateTokenForm) => {
-    console.log("Form Data:", data);
+      const totalRounded = bottomAmount + anchorAmount + discoveryAmount + allocationAmount;
+
+      const diff = totalSupply - totalRounded;
+
+      if (diff !== 0) {
+        bottomAmount += diff;
+      }
+
+      return { bottomAmount, anchorAmount, discoveryAmount, allocationAmount };
+    };
+
+    mutation.mutate({
+      quoteCurrency: data.quoteCurrency as HexAddress,
+      lotSize: data.lotSize,
+      maxOrderAmount: data.maxOrderAmount,
+      tokenName: data.tokenName,
+      tokenSymbol: data.tokenSymbol,
+      tokenTotalSupply: data.tokenTotalSupply,
+      bottomAmount: calculateAmounts(amounts).bottomAmount,
+      anchorAmount: calculateAmounts(amounts).anchorAmount,
+      discoveryAmount: calculateAmounts(amounts).discoveryAmount,
+      allocationAmount: calculateAmounts(amounts).allocationAmount,
+      bottomPrice: data.bottomPrice,
+      anchorPrice: data.anchorPrice,
+      discoveryPrice: data.discoveryPrice,
+      decimals: 18
+    })
   };
 
   return (
-    <Form validationBehavior="aria" onSubmit={handleSubmit(onSubmit)} className="w-full">
-      <ul className="grid grid-cols-1 grid-rows-none gap-4 md:grid-cols-12 md:grid-rows-3 lg:gap-4 xl:max-h-[34rem] xl:grid-rows-2 w-full">
-        <motion.li
-          className={`min-h-[14rem] list-none md:[grid-area:1/1/2/7] xl:[grid-area:1/1/2/5]`}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
-          <div className="relative h-full rounded-2.5xl border  p-2  md:rounded-3xl md:p-3">
-            <GlowingEffect
-              blur={0}
-              borderWidth={3}
-              spread={80}
-              glow={true}
-              disabled={false}
-              proximity={64}
-              inactiveZone={0.01}
-            />
-            <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-0.75 p-6  dark:shadow-[0px_0px_27px_0px_#2D2D2D] md:p-6">
-              <div className="relative flex flex-1 flex-col justify-between gap-3">
-                <div className="w-fit rounded-lg border border-gray-600 p-2 ">
-                  <Box className="h-4 w-4 text-black dark:text-neutral-400" />
+    <>
+      {mutation.isPending && (
+        <Loading/>
+      )}
+      <Form validationBehavior="aria" onSubmit={handleSubmit(onSubmit)} className="w-full">
+        <Card className="w-full">
+          <CardBody className="flex flex-col">
+            <CardHeader>
+              <h2 className="text-lg font-semibold">Create Pool</h2>
+            </CardHeader>
+            <div className="flex flex-col space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1">
+                  <Input
+                    label="Quote Currency"
+                    placeholder="Enter quote currency"
+                    {...register("quoteCurrency")}
+                  />
+                  {errors.quoteCurrency && <p className="text-sm text-red-500">{errors.quoteCurrency.message}</p>}
                 </div>
-                <div className="space-y-3">
-                  <h3 className="pt-0.5 text-xl/[1.375rem] font-semibold font-sans -tracking-4 md:text-2xl/[1.875rem] text-balance text-black dark:text-white">
-                    Token Name
-                  </h3>
-                  <Input {...register("name")} placeholder="e.g: Ethereum" variant="bordered" color="warning" />
-                  {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+                <div className="flex flex-col gap-1">
+                  <Input
+                    type="number"
+                    label="Lot Size"
+                    placeholder="Enter lot size"
+                    {...register("lotSize", { valueAsNumber: true })}
+                  />
+                  {errors.lotSize && <p className="text-sm text-red-500">{errors.lotSize.message}</p>}
                 </div>
-              </div>
-            </div>
-          </div>
-        </motion.li>
-
-        <motion.li
-          className={`min-h-[14rem] list-none md:[grid-area:1/7/2/13] xl:[grid-area:2/1/3/5]`}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        >
-          <div className="relative h-full rounded-2.5xl border  p-2  md:rounded-3xl md:p-3">
-            <GlowingEffect
-              blur={0}
-              borderWidth={3}
-              spread={80}
-              glow={true}
-              disabled={false}
-              proximity={64}
-              inactiveZone={0.01}
-            />
-            <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-0.75 p-6  dark:shadow-[0px_0px_27px_0px_#2D2D2D] md:p-6">
-              <div className="relative flex flex-1 flex-col justify-between gap-3">
-                <div className="w-fit rounded-lg border border-gray-600 p-2 ">
-                  <Settings className="h-4 w-4 text-black dark:text-neutral-400" />
+                <div className="flex flex-col gap-1">
+                  <Input
+                    type="number"
+                    label="Max Order Amount"
+                    placeholder="Enter max order amount"
+                    {...register("maxOrderAmount", { valueAsNumber: true })}
+                  />
+                  {errors.maxOrderAmount && <p className="text-sm text-red-500">{errors.maxOrderAmount.message}</p>}
                 </div>
-                <div className="space-y-3">
-                  <h3 className="pt-0.5 text-xl/[1.375rem] font-semibold font-sans -tracking-4 md:text-2xl/[1.875rem] text-balance text-black dark:text-white">
-                    Token Symbol
-                  </h3>
-                  <Input {...register("symbol")} placeholder="e.g: ETH" variant="bordered" color="warning" />
-                  {errors.symbol && <p className="text-red-500">{errors.symbol.message}</p>}
+                <div className="flex flex-col gap-1">
+                  <Input
+                    label="Token Name"
+                    placeholder="Enter token name"
+                    {...register("tokenName")}
+                  />
+                  {errors.tokenName && <p className="text-sm text-red-500">{errors.tokenName.message}</p>}
                 </div>
-              </div>
-            </div>
-          </div>
-        </motion.li>
-
-        <motion.li
-          className={`min-h-[14rem] list-none md:[grid-area:2/1/3/7] xl:[grid-area:1/5/3/8]`}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <div className="relative h-full rounded-2.5xl border  p-2  md:rounded-3xl md:p-3">
-            <GlowingEffect
-              blur={0}
-              borderWidth={3}
-              spread={80}
-              glow={true}
-              disabled={false}
-              proximity={64}
-              inactiveZone={0.01}
-            />
-            <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-0.75 p-6  dark:shadow-[0px_0px_27px_0px_#2D2D2D] md:p-6">
-              <div className="relative flex flex-1 flex-col justify-between gap-3">
-                <div className="w-fit rounded-lg border border-gray-600 p-2 ">
-                  <Lock className="h-4 w-4 text-black dark:text-neutral-400" />
+                <div className="flex flex-col gap-1">
+                  <Input
+                    label="Token Symbol"
+                    placeholder="Enter token symbol"
+                    {...register("tokenSymbol")}
+                  />
+                  {errors.tokenSymbol && <p className="text-sm text-red-500">{errors.tokenSymbol.message}</p>}
                 </div>
-                <div className="space-y-3">
-                  <h3 className="pt-0.5 text-xl/[1.375rem] font-semibold font-sans -tracking-4 md:text-2xl/[1.875rem] text-balance text-black dark:text-white">
-                    Total Supply
-                  </h3>
-                  <Input type="text" value={formatNumber(watch("totalSupply").toString())} onChange={handleChange} variant="bordered" color="warning" placeholder="e.g: 1,000,000,000" />
-                  {errors.totalSupply && <p className="text-red-500">{errors.totalSupply.message}</p>}
+                <div className="flex flex-col gap-1">
+                  <Input
+                    label="Total Supply"
+                    placeholder="Enter total supply"
+                    {...register("tokenTotalSupply", { valueAsNumber: true })}
+                  />
+                  {errors.tokenTotalSupply && <p className="text-sm text-red-500">{errors.tokenTotalSupply.message}</p>}
+                </div>
+                <div className="flex flex-col gap-1">
+                  <Input
+                    label="Bottom Price"
+                    placeholder="Enter bottom price"
+                    {...register("bottomPrice", { valueAsNumber: true })}
+                  />
+                  {errors.bottomPrice && <p className="text-sm text-red-500">{errors.bottomPrice.message}</p>}
+                </div>
+                <div className="flex flex-col gap-1">
+                  <Input
+                    label="Anchor Price"
+                    placeholder="Enter anchor price"
+                    {...register("anchorPrice", { valueAsNumber: true })}
+                  />
+                  {errors.anchorPrice && <p className="text-sm text-red-500">{errors.anchorPrice.message}</p>}
+                </div>
+                <div className="flex flex-col gap-1">
+                  <Input
+                    label="Discovery Price"
+                    placeholder="Enter discovery price"
+                    {...register("discoveryPrice", { valueAsNumber: true })}
+                  />
+                  {errors.discoveryPrice && <p className="text-sm text-red-500">{errors.discoveryPrice.message}</p>}
                 </div>
               </div>
-            </div>
-          </div>
-        </motion.li>
-
-        <motion.li
-          className={`min-h-[14rem] list-none md:[grid-area:2/7/3/13] xl:[grid-area:1/8/2/13]`}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
-        >
-          <div className="relative h-full rounded-2.5xl border  p-2  md:rounded-3xl md:p-3">
-            <GlowingEffect
-              blur={0}
-              borderWidth={3}
-              spread={80}
-              glow={true}
-              disabled={false}
-              proximity={64}
-              inactiveZone={0.01}
-            />
-            <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-0.75 p-6  dark:shadow-[0px_0px_27px_0px_#2D2D2D] md:p-6">
-              <div className="relative flex flex-1 flex-col justify-between gap-3">
-                <div className="w-fit rounded-lg border border-gray-600 p-2 ">
-                  <Sparkles className="h-4 w-4 text-black dark:text-neutral-400" />
-                </div>
-                <div className="space-y-3">
-                  <h3 className="pt-0.5 text-xl/[1.375rem] font-semibold font-sans -tracking-4 md:text-2xl/[1.875rem] text-balance text-black dark:text-white">
-                    Decimals
-                  </h3>
-                  <h2
-                    className="[&_b]:md:font-semibold [&_strong]:md:font-semibold font-sans text-sm/[1.125rem] 
-                md:text-base/[1.375rem]  text-black dark:text-neutral-400"
-                  >
-                    {DECIMALS_TOKEN} (default decimals)
-                  </h2>
-                </div>
+              <SliderVariable
+                amounts={amounts}
+                setAmounts={setAmounts}
+                locked={locked}
+                setLocked={setLocked}
+              />
+              <div className="mt-4">
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={!!errors.quoteCurrency || !!errors.lotSize || !!errors.maxOrderAmount || !!errors.tokenName || !!errors.tokenSymbol || !!errors.tokenTotalSupply || !!errors.bottomPrice || !!errors.anchorPrice || !!errors.discoveryPrice}
+                >
+                  Launch Token
+                </Button>
               </div>
             </div>
-          </div>
-        </motion.li>
-
-        <motion.li
-          className={`min-h-[14rem] list-none md:[grid-area:3/1/4/13] xl:[grid-area:2/8/3/13]`}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-        >
-          <div className="relative h-full rounded-2.5xl border  p-2  md:rounded-3xl md:p-3">
-            <GlowingEffect
-              blur={0}
-              borderWidth={3}
-              spread={80}
-              glow={true}
-              disabled={false}
-              proximity={64}
-              inactiveZone={0.01}
-            />
-            <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-0.75 p-6  dark:shadow-[0px_0px_27px_0px_#2D2D2D] md:p-6">
-              <div className="relative flex flex-1 flex-col justify-between gap-3">
-                <div className="w-fit rounded-lg border border-gray-600 p-2 ">
-                  <Search className="h-4 w-4 text-black dark:text-neutral-400" />
-                </div>
-                <div className="space-y-3">
-                  <h3 className="pt-0.5 text-xl/[1.375rem] font-semibold font-sans -tracking-4 md:text-2xl/[1.875rem] text-balance text-black dark:text-white">
-                    Deploy Now
-                  </h3>
-                  <Button type="submit" variant="ghost" color="success">
-                    <ArrowUp className="w-4 h-4" />Deploy
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.li>
-      </ul>
-    </Form>
+          </CardBody>
+        </Card>
+      </Form >
+    </>
   );
 }

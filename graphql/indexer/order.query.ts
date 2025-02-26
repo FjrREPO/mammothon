@@ -76,48 +76,49 @@ export const queryOrderId = (id: string) => {
   }`
 }
 
-export const queryOrdersList = () => {
-  return gql`{
-    orderss { 
-      items { 
-        pool { 
-          baseCurrency 
-          coin 
+export const queryOrdersList = (after?: string) => {
+  return gql`
+    query {
+      orderss(after: "${after || ""}") { 
+        items { 
+          pool { 
+            baseCurrency 
+            coin 
+            id 
+            lotSize 
+            maxOrderAmount 
+            orderBook 
+            quoteCurrency 
+            timestamp 
+          } 
+          orderId 
           id 
-          lotSize 
-          maxOrderAmount 
-          orderBook 
-          quoteCurrency 
+          filled 
+          expiry 
+          poolId 
+          price 
+          quantity 
+          side 
+          status 
           timestamp 
+          type 
+          user { 
+            amount 
+            currency 
+            lockedAmount 
+            user 
+          } 
         } 
-        orderId 
-        id 
-        filled 
-        expiry 
-        poolId 
-        price 
-        quantity 
-        side 
-        status 
-        timestamp 
-        type 
-        user { 
-          amount 
-          currency 
-          lockedAmount 
-          user 
+        pageInfo { 
+          endCursor 
+          hasNextPage 
+          hasPreviousPage 
+          startCursor 
         } 
-      } 
-      pageInfo { 
-        endCursor 
-        hasNextPage 
-        hasPreviousPage 
-        startCursor 
-      } 
-      totalCount 
-    }
-  }`
-}
+        totalCount 
+      }
+    }`;
+};
 
 export const queryOrdersUser = (address: string) => {
   return gql`{
