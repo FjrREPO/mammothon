@@ -1,15 +1,15 @@
 import { FilterABI } from '@/lib/abis/FilterABI';
+import { ADDRESS_BITMAP } from '@/lib/constants';
 import { useWagmiConfig } from '@/lib/wagmi';
 import { UseFilterOrderbookOptions, UseFilterOrderbookResult, UseFilterOrderbookState } from '@/types/query/filter-orderbook.types';
 import { Config, readContract } from '@wagmi/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { zeroAddress } from 'viem';
 
 const DEFAULT_DEBOUNCE_TIME = 1000;
 const REFRESH_INTERVAL = 50000;
 
 const createContractReadConfig = (functionName: string, args: unknown[] = []) => ({
-  address: zeroAddress,
+  address: ADDRESS_BITMAP,
   abi: FilterABI,
   functionName,
   args,

@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react';
 import { writeContract, waitForTransactionReceipt, Config } from '@wagmi/core';
-import { decodeEventLog, Log, zeroAddress } from 'viem';
+import { decodeEventLog, Log } from 'viem';
 import { useWagmiConfig } from '@/lib/wagmi';
 import { PlaceOrderEvent, PlaceOrderParams, PlaceOrderResult, UsePlaceOrderOptions, UsePlaceOrderReturn } from '@/types/query/orderbook';
 import { PlaceOrderABI } from '@/lib/abis/PlaceOrderABI';
+import { ADDRESS_ENGINE } from '@/lib/constants';
 
 export const findEventLog = (logs: Log[], eventName: string): Log | undefined => {
   return logs.find((log: Log) => {
@@ -62,7 +63,7 @@ export const usePlaceOrder = (
 
       try {
         const hash = await writeContract(wagmiConfig, {
-          address: zeroAddress,
+          address: ADDRESS_ENGINE,
           abi: PlaceOrderABI,
           functionName: 'placeOrder',
           args: [params.tick, params.volume, params.user, params.isBuy, params.isMarket],
