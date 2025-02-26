@@ -3,8 +3,6 @@ import { gql } from "graphql-request"
 export const queryPoolId = (id: string) => {
   return gql`{
     pools(
-      orderBy: blockTimestamp
-      orderDirection: desc
       id: "${id}"
     ) {
       baseCurrency
@@ -21,10 +19,7 @@ export const queryPoolId = (id: string) => {
 
 export const queryPoolsList = () => {
   return gql`{
-    poolss(
-      orderBy: blockTimestamp
-      orderDirection: desc
-    ) {
+    poolss {
       items {
         baseCurrency
         coin
@@ -49,8 +44,6 @@ export const queryPoolsList = () => {
 export const queryPoolsId = (id: string) => {
   return gql`{
     poolss(
-      orderBy: blockTimestamp
-      orderDirection: desc
       where: {id: "${id}"}
     ) {
       items {

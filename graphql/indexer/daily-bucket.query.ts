@@ -3,8 +3,6 @@ import { gql } from "graphql-request"
 export const queryDailyBucketId = (id: string) => {
   return gql`{
     dailyBuckets(
-      orderBy: timestamp
-      orderDirection: desc
       id: "${id}"
     ) {
       average
@@ -22,10 +20,7 @@ export const queryDailyBucketId = (id: string) => {
 
 export const queryDailyBucketsList = () => {
   return gql`{
-    dailyBucketss(
-      orderBy: timestamp
-      orderDirection: desc
-    ) {
+    dailyBucketss {
       items {
         average
         close

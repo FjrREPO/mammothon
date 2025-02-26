@@ -6,7 +6,7 @@ import { formatTimestamp } from "@/lib/helper";
 import React from "react";
 import { tokensData } from "@/data/tokensData";
 import { normalize } from "@/lib/bignumber";
-import { DECIMALS_TOKEN } from "@/lib/constants";
+import { LIST_TOKEN } from "@/lib/constants";
 import { formatNumber } from "@/lib/custom-helper";
 
 interface TableOrdersProps {
@@ -18,6 +18,8 @@ export default function TableOrders({ datas, isLoading }: TableOrdersProps) {
   const columns: Column[] = [
     { name: "Id", uid: "id", sortable: true },
     { name: "Order Id", uid: "orderId", sortable: true },
+    { name: "Side", uid: "side", sortable: true },
+    { name: "Type", uid: "type", sortable: true },
     { name: "Time", uid: "timestamp", sortable: true },
     { name: "Expiry", uid: "expiry", sortable: true },
     { name: "Token", uid: "token", sortable: true, sortingKey: "pool.coin" },
@@ -28,6 +30,9 @@ export default function TableOrders({ datas, isLoading }: TableOrdersProps) {
 
   const renderCell = React.useCallback((item: OrdersResponse, columnKey: string) => {
     const cellValue = item[columnKey as keyof OrdersResponse];
+
+    const tokenSymbol = item.pool?.coin?.split("/")[0];
+    const tokenDecimal = LIST_TOKEN.find((item) => item.symbol.toLowerCase() === tokenSymbol?.toLowerCase());
 
     switch (columnKey) {
       case "id":
@@ -81,13 +86,13 @@ export default function TableOrders({ datas, isLoading }: TableOrdersProps) {
       case "price":
         return (
           <div className="flex flex-row gap-2 items-center">
-            <p className="text-bold text-sm capitalize">{formatNumber(Number(normalize(item.price, DECIMALS_TOKEN)), { prefix: "$", compact: true })}</p>
+            <p className="text-bold text-sm capitalize">{formatNumber(Number(normalize(item.price, tokenDecimal?.decimals || 0)), { prefix: "$", compact: true })}</p>
           </div>
         );
       case "quantity":
         return (
           <div className="flex flex-row gap-2 items-center">
-            <p className="text-bold text-sm capitalize">{formatNumber(Number(normalize(item.quantity, DECIMALS_TOKEN)), { compact: true })}</p>
+            <p className="text-bold text-sm capitalize">{formatNumber(Number(normalize(item.quantity, tokenDecimal?.decimals || 0)), { compact: true, decimals: 2 })}</p>
           </div>
         );
       case "status":

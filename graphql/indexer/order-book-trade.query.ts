@@ -3,8 +3,6 @@ import { gql } from "graphql-request"
 export const queryOrderBookTradeId = (id: string) => {
   return gql`{
     orderBookTrades(
-      orderBy: blockTimestamp
-      orderDirection: desc
       id: "${id}"
     ) {
       amount
@@ -21,10 +19,7 @@ export const queryOrderBookTradeId = (id: string) => {
 
 export const queryOrderBookTradesList = () => {
   return gql`{
-    orderBookTradess(
-      orderBy: blockTimestamp
-      orderDirection: desc
-    ) {
+    orderBookTradess {
       items {
         amount
         blockTimestamp
@@ -49,8 +44,6 @@ export const queryOrderBookTradesList = () => {
 export const queryOrderBookTradesId = (id: string) => {
   return gql`{
     orderBookTradess(
-      orderBy: blockTimestamp
-      orderDirection: desc
       where: {id: "${id}"}
     ) {
       items {

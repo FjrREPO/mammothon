@@ -8,7 +8,7 @@ export const ADDRESS_BALANCE_MANAGER = "0x00000000000000000000000000000000000000
 export const ADDRESS_POOL_MANAGER = "0x0000000000000000000000000000000000000000" as HexAddress;
 export const CHAIN_ID_ARBITRUM = 42161;
 export const CHAIN_ID_ARBITRUM_SEPOLIA = 421614;
-export const DECIMALS_TOKEN = 6;
+export const DECIMALS_TOKEN = 18;
 
 // test gtx
 export const ADDRESS_ROUTER_GTX = "0xe0eCBC144f924bD5bA7C7D9b373795EFA2F3589B" as HexAddress;
@@ -16,7 +16,7 @@ export const ADDRESS_ORDERBOOK_GTX = "0x92D8387421fe5205051C82E4a6473E0aC5cc636b
 export const ADDRESS_BALANCE_MANAGER_GTX = "0xf997fBd9747841513d26d895072a7f35e5125cfc" as HexAddress;
 export const ADDRESS_POOL_MANAGER_GTX = "0x2A61148905eA1cf87f352249DD92215C8eA0fdD5" as HexAddress;
 
-// arb sepolia
+// arb sepolia gtx
 export const LIST_TOKEN = [
   {
     decimals: 6,
@@ -25,7 +25,7 @@ export const LIST_TOKEN = [
     address: "0x6AcaCCDacE944619678054Fe0eA03502ed557651"
   },
   {
-    decimals: 8,
+    decimals: 18,
     name: "Wrapped Bitcoin",
     symbol: "WBTC",
     address: "0x0000000000000000000000000000000000000000"

@@ -3,8 +3,6 @@ import { gql } from "graphql-request";
 export const queryBalanceUser = (address: string) => {
   return gql`{
     balances(
-      orderBy: blockTimestamp
-      orderDirection: desc
       where: {user: "${address}"}
     ) {
       amount
@@ -17,10 +15,7 @@ export const queryBalanceUser = (address: string) => {
 
 export const queryBalancesList = () => {
   return gql`{
-      balancess(
-        orderBy: blockTimestamp
-        orderDirection: desc
-      ) {
+      balancess {
       items {
         amount
         user
@@ -41,8 +36,6 @@ export const queryBalancesList = () => {
 export const queryBalancesUser = (address: string) => {
   return gql`{
       balancess(
-        orderBy: blockTimestamp
-        orderDirection: desc
         where: {user: "${address}"}
       ) {
       items {

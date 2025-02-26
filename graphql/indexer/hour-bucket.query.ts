@@ -3,8 +3,6 @@ import { gql } from "graphql-request"
 export const queryHourBucketId = (id: string) => {
   return gql`{
     hourBuckets(
-      orderBy: blockTimestamp
-      orderDirection: desc
       id: "${id}"
     ) {
       average
@@ -22,10 +20,7 @@ export const queryHourBucketId = (id: string) => {
 
 export const queryHourBucketsList = () => {
   return gql`{
-    hourBucketss(
-      orderBy: blockTimestamp
-      orderDirection: desc
-    ) {
+    hourBucketss {
       items {
         average
         close
@@ -51,8 +46,6 @@ export const queryHourBucketsList = () => {
 export const queryHourBucketsId = (id: string) => {
   return gql`{
     hourBucketss(
-      orderBy: blockTimestamp
-      orderDirection: desc
       where: {id: "${id}"}
     ) {
       items {
