@@ -187,8 +187,9 @@ export function LaunchpadForm() {
               <div className="mt-4">
                 <Button
                   type="submit"
+                  color="primary"
                   className="w-full"
-                  disabled={!!errors.quoteCurrency || !!errors.lotSize || !!errors.maxOrderAmount || !!errors.tokenName || !!errors.tokenSymbol || !!errors.tokenTotalSupply || !!errors.bottomPrice || !!errors.anchorPrice || !!errors.discoveryPrice}
+                  disabled={mutation.isPending}
                 >
                   Launch Token
                 </Button>
