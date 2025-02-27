@@ -42,8 +42,6 @@ export function LaunchpadForm() {
     resolver: zodResolver(createPoolFormSchema),
     defaultValues: {
       quoteCurrency: "",
-      lotSize: 0,
-      maxOrderAmount: 0,
       tokenName: "",
       tokenSymbol: "",
       tokenTotalSupply: 0,
@@ -86,8 +84,6 @@ export function LaunchpadForm() {
 
     mutation.mutate({
       quoteCurrency: valueQuoteCurrency as unknown as HexAddress,
-      lotSize: data.lotSize,
-      maxOrderAmount: data.maxOrderAmount,
       tokenName: data.tokenName,
       tokenSymbol: data.tokenSymbol,
       tokenTotalSupply: data.tokenTotalSupply,
@@ -145,24 +141,6 @@ export function LaunchpadForm() {
                     </SelectItem>
                   </Select>
                   {errors.quoteCurrency && <p className="text-sm text-red-500">{errors.quoteCurrency.message}</p>}
-                </div>
-                <div className="flex flex-col gap-1">
-                  <Input
-                    type="number"
-                    label="Lot Size"
-                    placeholder="Enter lot size"
-                    {...register("lotSize", { valueAsNumber: true })}
-                  />
-                  {errors.lotSize && <p className="text-sm text-red-500">{errors.lotSize.message}</p>}
-                </div>
-                <div className="flex flex-col gap-1">
-                  <Input
-                    type="number"
-                    label="Max Order Amount"
-                    placeholder="Enter max order amount"
-                    {...register("maxOrderAmount", { valueAsNumber: true })}
-                  />
-                  {errors.maxOrderAmount && <p className="text-sm text-red-500">{errors.maxOrderAmount.message}</p>}
                 </div>
                 <div className="flex flex-col gap-1">
                   <Input

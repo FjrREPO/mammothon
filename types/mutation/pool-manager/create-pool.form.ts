@@ -2,8 +2,6 @@ import { z } from "zod";
 
 export const createPoolFormSchema = z.object({
   quoteCurrency: z.string().min(1, "This field is required"),
-  lotSize: z.number().min(1, "This field is required"),
-  maxOrderAmount: z.number().min(1, "This field is required"),
   tokenName: z.string().min(1, "This field is required"),
   tokenSymbol: z.string().min(1, "This field is required"),
   tokenTotalSupply: z.number().min(1, "This field is required"),

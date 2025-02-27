@@ -37,8 +37,6 @@ export const useCreatePool = () => {
   const mutation = useMutation({
     mutationFn: async ({
       quoteCurrency,
-      lotSize,
-      maxOrderAmount,
       tokenName,
       tokenSymbol,
       tokenTotalSupply,
@@ -52,8 +50,6 @@ export const useCreatePool = () => {
       decimals
     }: {
       quoteCurrency: HexAddress;
-      lotSize: number;
-      maxOrderAmount: number;
       tokenName: string;
       tokenSymbol: string;
       tokenTotalSupply: number;
@@ -72,9 +68,12 @@ export const useCreatePool = () => {
           { step: 2, status: "idle" }
         ]);
 
-        if (!quoteCurrency || !lotSize || !maxOrderAmount || !tokenName || !tokenSymbol || !decimals) {
+        if (!quoteCurrency || !tokenName || !tokenSymbol || !decimals) {
           throw new Error("Invalid parameters");
         }
+
+        const maxOrderAmount = 1_000_000_000;
+        const lotSize = 1_000_000_000;
 
         const formattedMaxOrderAmount = valueToBigInt(denormalize(maxOrderAmount, decimals));
         const formattedLotSize = valueToBigInt(lotSize);
