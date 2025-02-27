@@ -8,12 +8,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { CreatePoolForm, createPoolFormSchema } from "@/types/mutation/pool-manager/create-pool.form";
 import SliderVariable from "./SliderVariable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCreatePool } from "@/hooks/mutation/pool-manager/useCreatePool";
 import Loading from "@/components/loader/loading";
+import { Select, SelectItem } from "@heroui/select";
+import { ADDRESS_USDC, ADDRESS_USDT } from "@/lib/constants";
+import { Avatar } from "@heroui/avatar";
 
 export function LaunchpadForm() {
   const { mutation } = useCreatePool();
+  const [valueQuoteCurrency, setValueQuoteCurrency] = useState<Set<string>>(new Set([]));
 
   const [amounts, setAmounts] = useState({
     bottomAmount: 0.25,
@@ -32,6 +36,7 @@ export function LaunchpadForm() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors }
   } = useForm<CreatePoolForm>({
     resolver: zodResolver(createPoolFormSchema),
@@ -51,6 +56,13 @@ export function LaunchpadForm() {
       discoveryPrice: 0
     },
   });
+
+  useEffect(() => {
+    const firstValue = Array.from(valueQuoteCurrency)[0];
+    if (firstValue) {
+      setValue("quoteCurrency", firstValue);
+    }
+  }, [valueQuoteCurrency, setValue]);
 
   const onSubmit = (data: CreatePoolForm) => {
     const calculateAmounts = (amounts: { bottomAmount: number, anchorAmount: number, discoveryAmount: number, allocationAmount: number }) => {
@@ -73,7 +85,7 @@ export function LaunchpadForm() {
     };
 
     mutation.mutate({
-      quoteCurrency: data.quoteCurrency as HexAddress,
+      quoteCurrency: valueQuoteCurrency as unknown as HexAddress,
       lotSize: data.lotSize,
       maxOrderAmount: data.maxOrderAmount,
       tokenName: data.tokenName,
@@ -93,7 +105,7 @@ export function LaunchpadForm() {
   return (
     <>
       {mutation.isPending && (
-        <Loading/>
+        <Loading />
       )}
       <Form validationBehavior="aria" onSubmit={handleSubmit(onSubmit)} className="w-full">
         <Card className="w-full">
@@ -104,11 +116,34 @@ export function LaunchpadForm() {
             <div className="flex flex-col space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
-                  <Input
-                    label="Quote Currency"
-                    placeholder="Enter quote currency"
-                    {...register("quoteCurrency")}
-                  />
+                  <Select
+                    isRequired
+                    label="Qoute Currency"
+                    placeholder="Select an quote currency"
+                    selectedKeys={valueQuoteCurrency}
+                    onSelectionChange={(keys) => 
+                      setValueQuoteCurrency(new Set(Array.from(keys).map(String)))
+                    }
+                    defaultSelectedKeys={[ADDRESS_USDC]}
+                  >
+                    <SelectItem
+                      key={ADDRESS_USDC}
+                      value={ADDRESS_USDC}
+                      startContent={
+                        <Avatar alt="coin" className="w-6 h-6 min-w-6 min-h-6" src="/coin-usdc.png" />
+                      }>
+                      USDC
+                    </SelectItem>
+                    <SelectItem
+                      key={ADDRESS_USDT}
+                      value={ADDRESS_USDT}
+                      startContent={
+                        <Avatar alt="coin" className="w-6 h-6 min-w-6 min-h-6" src="/coin-usdt.png" />
+                      }
+                    >
+                      USDT
+                    </SelectItem>
+                  </Select>
                   {errors.quoteCurrency && <p className="text-sm text-red-500">{errors.quoteCurrency.message}</p>}
                 </div>
                 <div className="flex flex-col gap-1">
