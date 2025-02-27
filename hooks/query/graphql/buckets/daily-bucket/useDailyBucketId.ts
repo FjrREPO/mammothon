@@ -1,5 +1,5 @@
-import { queryDailyBucketId } from "@/graphql/indexer/daily-bucket.query";
-import { QueryDailyBucketId } from "@/types/query/graphql/daily-bucket.types";
+import { queryDailyBucketId } from "@/graphql/indexer/buckets/daily-bucket.query";
+import { QueryDailyBucketId } from "@/types/query/graphql/buckets/daily-bucket.types";
 import { useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
 

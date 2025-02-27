@@ -1,5 +1,5 @@
-import { queryHourBucketsId } from "@/graphql/indexer/hour-bucket.query";
-import { QueryHourBucketsId } from "@/types/query/graphql/hour-bucket";
+import { queryHourBucketsId } from "@/graphql/indexer/buckets/hour-bucket.query";
+import { QueryHourBucketsId } from "@/types/query/graphql/buckets/hour-bucket";
 import { useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
 

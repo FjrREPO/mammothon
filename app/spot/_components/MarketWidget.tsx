@@ -7,6 +7,8 @@ import { formatNumber } from '@/lib/custom-helper'
 import { Card, CardBody } from '@heroui/card'
 import { Skeleton } from '@heroui/skeleton'
 import { Tooltip } from '@heroui/tooltip'
+import { Select, SelectItem } from '@heroui/select'
+import { useState } from 'react'
 import { MarketDataCMC } from '@/types/api/market-data.cmc'
 
 interface DataItemProps {
@@ -35,6 +37,7 @@ export default function MarketWidget({
 }) {
   const priceChange = mData?.priceChangePercentage24h ?? 0;
   const PriceChangeIcon = priceChange >= 0 ? TrendingUpIcon : TrendingDownIcon;
+  const [ timeFrame, setTimeFrame ] = useState<Set<string>>(new Set([]));
 
   return (
     <Card className="hover:border-gray-700 transition-colors duration-200">
@@ -78,7 +81,7 @@ export default function MarketWidget({
         <div className='flex flex-row items-center gap-5'>
           <div className="grid grid-cols-3 gap-4 w-full sm:w-auto">
             {cLoading ? (
-              Array(2).fill(0).map((_, i) => (
+              Array(5).fill(0).map((_, i) => (
                 <Skeleton key={i} className="h-12 w-28 rounded-xl" />
               ))
             ) : (
@@ -131,15 +134,24 @@ export default function MarketWidget({
           {cLoading ? (
             <Skeleton className="h-8 w-32 rounded-xl" />
           ) : (
-            <Tooltip content="Contract Address">
-              <button
-                onClick={() => window.open(`https://etherscan.io/address/0x0d01...11ec`, '_blank')}
-                className="flex items-center text-xs text-gray-400 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-gray-800"
-              >
-                0x0d01...11ec
-                <ArrowUpIcon className="w-3 h-3 ml-1 rotate-45" />
-              </button>
-            </Tooltip>
+            <div className='flex flex-col gap-4'>
+              <Tooltip content="Contract Address">
+                <button
+                  onClick={() => window.open(`https://etherscan.io/address/0x0d01...11ec`, '_blank')}
+                  className="flex items-center text-xs text-gray-400 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-gray-800"
+                >
+                  0x0d01...11ec
+                  <ArrowUpIcon className="w-3 h-3 ml-1 rotate-45" />
+                </button>
+              </Tooltip>
+              <Select label="Time Frame" selectedKeys={timeFrame} onSelectionChange={(keys) => setTimeFrame(new Set(Array.from(keys).map(String)))}>
+                <SelectItem key="d" value="d">D</SelectItem>
+                <SelectItem key="h" value="h">h</SelectItem>
+                <SelectItem key="30m" value="30m">30m</SelectItem>
+                <SelectItem key="5m" value="5m">5m</SelectItem>
+                <SelectItem key="m" value="m">m</SelectItem>
+              </Select>
+            </div>
           )}
         </div>
 

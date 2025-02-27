@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PageInfoSchema } from "./base.types";
+import { PageInfoSchema } from "../base.types";
 
 const DailyBucketSchema = z.object({
   average: z.string(),
